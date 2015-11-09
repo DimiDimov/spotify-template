@@ -1,3 +1,89 @@
 body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background:rgba(245,248,250,1);
+
+}
+#instructions {
+  background:#E3E3E3;
+  border-radius:5px;
   padding:10px;
+  max-height:300px;
+  overflow:auto;
+  margin-bottom:30px;
+}
+
+li {
+  padding-bottom:10px;
+  margin-bottom:10px;
+  margin-top:10px;
+  border-bottom:1px solid #d3d3d3;
+}
+
+header {
+  text-align: center;
+}
+
+#tweet-input {
+  margin-left:70px;
+  margin-top:10px;
+}
+
+
+.image {
+  margin:10px;
+  float:left;
+}
+
+img {
+  max-width:50px;
+  border-radius: 50%;
+}
+.time {
+  opacity:.5;
+}
+.handle {
+  font-size:2em;
+}
+
+.tweet-box {
+  border-bottom:1px solid #d3d3d3;
+  padding:20px;
+  margin-left:100px;
+  margin-right:100px;
+  background-color: white;
+}
+
+.send-tweet {
+  text-align:right;
+  margin-top:5px;
+}
+.tweet-box:hover{
+  background-color:rgba(211, 211, 211, 0.27);
+}
+
+.likes {
+  color:#BDBDBD;
+}
+
+.write-tweet,.write-tweet:hover  {
+  background-color: rgb(229, 242, 247);
+}
+
+.fa-heart {
+  cursor: pointer;
+}
+
+.fa-twitter {
+  color:#55acee;
+}
+
+header {
+  padding:10px;
+  background:white;
+  margin-bottom:10px;
+
+}
+
+header .log-out {
+  float:right;
 }

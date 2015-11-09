@@ -1,8 +1,108 @@
 var data;
-var baseUrl = 'https://api.spotify.com/v1/search?type=track&query='
-var myApp = angular.module('myApp', [])
+var baseUrl = 'https://api.spotify.com/v1/search?type=track&query=';
+var myApp = angular.module('myApp', ['firebase']);
 
-var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
+var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebaseArray, $firebaseObject, $http) {
+  // Create a variable 'ref' to reference your firebase storage
+  var ref = new Firebase('https://walruses.firebaseio.com/');
+
+  // Create references to store tweets and users
+  var tweetsRef = ref.child('tweets');
+  var usersRef = ref.child("users");
+
+  // Create a firebaseArray of your tweets, and store this as part of $scope
+  $scope.tweets = $firebaseArray(tweetsRef);
+
+  // Create a firebaseObject of your users, and store this as part of $scope
+  $scope.users = $firebaseObject(usersRef);
+
+  // Create authorization object that referes to firebase
+  $scope.authObj = $firebaseAuth(ref);
+
+  // Test if already logged in
+  var authData = $scope.authObj.$getAuth();
+  if (authData) {
+    $scope.userId = authData.uid;
+  }
+
+
+  // SignUp function
+  $scope.signUp = function() {
+    // Create user
+    $scope.authObj.$createUser({
+      email: $scope.email,
+      password: $scope.password,
+    })
+
+      // Once the user is created, call the logIn function
+        .then($scope.logIn)
+
+      // Once logged in, set and save the user data
+        .then(function(authData) {
+          $scope.userId = authData.uid;
+          $scope.users[authData.uid] ={
+            handle:$scope.handle,
+            userImage:$scope.userImage,
+          }
+          $scope.users.$save()
+        })
+
+      // Catch any errors
+        .catch(function(error) {
+          console.error("Error: ", error);
+        });
+  }
+
+  // SignIn function
+  $scope.signIn = function() {
+    $scope.logIn().then(function(authData){
+      $scope.userId = authData.uid;
+    })
+  }
+
+  // LogIn function
+  $scope.logIn = function() {
+    console.log('log in')
+    return $scope.authObj.$authWithPassword({
+      email: $scope.email,
+      password: $scope.password
+    })
+  }
+
+  // LogOut function
+  $scope.logOut = function() {
+    $scope.authObj.$unauth()
+    $scope.userId = false
+  }
+
+  // Write an accesible tweet function to save a tweet
+  $scope.tweet = function() {
+
+    // Add a new object to the tweets array using the firebaseArray .$add method.
+    $scope.tweets.$add({
+      text:$scope.newTweet,
+      userId:$scope.userId,
+      likes:0,
+      time:Firebase.ServerValue.TIMESTAMP
+    })
+
+      // Once the tweet is saved, reset the value of $scope.newTweet to empty string
+        .then(function() {
+          $scope.newTweet = ''
+        })
+  }
+
+  // Function to like a tweet
+  $scope.like = function(tweet) {
+    tweet.likes += 1;
+    $scope.tweets.$save(tweet)
+  }
+
+
+
+
+
+
   $scope.audioObject = {}
   $scope.getSongs = function() {
     $http.get(baseUrl + $scope.track).success(function(response){
@@ -23,6 +123,31 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $http) {
       $scope.currentSong = song
     }
   }
+
+  $scope.add = function(trackName, trackArtist) {
+    //alert("debuggin' 101")
+    var li = $('<li>').html(trackName  + ', by ' + trackArtist);
+
+    $('#playlist').append(li);
+  }
+
+  $scope.publish = function() {
+
+    // Add a new object to the tweets array using the firebaseArray .$add method.
+    $scope.tweets.$add({
+      //text:$scope.newPlaylist,
+      text:"this is a test",
+      userId:$scope.userId,
+      likes:0,
+      time:Firebase.ServerValue.TIMESTAMP
+    })
+
+      // Once the tweet is saved, reset the value of $scope.newTweet to empty string
+        .then(function() {
+          $scope.newPlaylist = $('<ul>');
+        })
+  }
+
 })
 
 // Add tool tips to anything with a title property
