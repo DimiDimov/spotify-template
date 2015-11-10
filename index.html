@@ -101,13 +101,20 @@
 				<ul>
 					<li ng-repeat="track in tracks" class="" ng-click="add(track.name, track.artists[0].name)" title="{{track.name}}">{{track.name + ', by ' + track.artists[0].name}}</li>
 				</ul>
-				<h2>Your Playlist:</h2>
-				<ul  id="playlist" name="playlist" ng-model="newPlaylist"></ul>
+
+
 			</div>
-			<!-- Execute the tweet function when clicked -->
-			<button ng-click="publish()" type="submit" class="btn btn-primary">
-				Publish
-			</button>
+			<!-- Execute the publish function when clicked -->
+			<div class="tweet-box write-tweet">
+				<form name="playlist-input" id="playlist-input">
+				<textarea placeholder="Name Your Playlist" ng-model="playlistName" name="title" class="form-control" required ng-maxlength="140"></textarea>
+					<ul  id="playlist" name="playlist" ng-model="newPlaylist"></ul>
+					<!--<p id="playlist" ng-model="newPlaylist"></p>-->
+					<button ng-click="publish()" type="submit" class="btn btn-primary">
+						Publish
+					</button>
+				</form>
+			</div>
 			<!-- Show tweets (if userId is defined) -->
 			<div ng-show="userId">
 
@@ -154,6 +161,11 @@
 						<!-- Put in the text of the tweet -->
 						<div class="tweet">
 							{{tweet.text}}
+						</div>
+
+						<div class="playlistSongs">
+							<ul>{{tweet.content}}</ul>
+
 						</div>
 
 						<!-- Create a section for showing tweet likes -->

@@ -125,10 +125,10 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
   }
 
   $scope.add = function(trackName, trackArtist) {
-    //alert("debuggin' 101")
     var li = $('<li>').html(trackName  + ', by ' + trackArtist);
-
     $('#playlist').append(li);
+
+    //$('#playlist').append(trackName  + ', by ' + trackArtist + "</br>");
   }
 
   $scope.publish = function() {
@@ -136,7 +136,10 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
     // Add a new object to the tweets array using the firebaseArray .$add method.
     $scope.tweets.$add({
       //text:$scope.newPlaylist,
-      text:"this is a test",
+
+
+      text:$scope.playlistName,
+      content: $('#playlist').html(),
       userId:$scope.userId,
       likes:0,
       time:Firebase.ServerValue.TIMESTAMP
@@ -144,7 +147,7 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
 
       // Once the tweet is saved, reset the value of $scope.newTweet to empty string
         .then(function() {
-          $scope.newPlaylist = $('<ul>');
+          $scope.playlistName = '';
         })
   }
 
