@@ -2,6 +2,8 @@ var data;
 var baseUrl = 'https://api.spotify.com/v1/search?type=track&query=';
 var myApp = angular.module('myApp', ['firebase']);
 
+var playlistAttempt = [];
+
 var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebaseArray, $firebaseObject, $http) {
   // Create a variable 'ref' to reference your firebase storage
   var ref = new Firebase('https://walruses.firebaseio.com/');
@@ -9,6 +11,11 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
   // Create references to store tweets and users
   var tweetsRef = ref.child('tweets');
   var usersRef = ref.child("users");
+  //var playlistRef = ref.child("currentPlaylist");
+
+  //$scope.currentPlaylist = $firebaseArray(playlistRef);
+
+
 
   // Create a firebaseArray of your tweets, and store this as part of $scope
   $scope.tweets = $firebaseArray(tweetsRef);
@@ -88,6 +95,7 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
 
       // Once the tweet is saved, reset the value of $scope.newTweet to empty string
         .then(function() {
+          alert("test");
           $scope.newTweet = ''
         })
   }
@@ -124,12 +132,20 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
     }
   }
 
+  //$scope.currentPlaylist = $firebaseArray();
+
   $scope.add = function(trackName, trackArtist) {
     var li = $('<li>').html(trackName  + ', by ' + trackArtist);
     $('#playlist').append(li);
+    //$scope.currentPlaylist.$add({
+    //  trackTitle: trackName,
+    //  artist: trackArtist
+    playlistAttempt.push({trackTitle:trackName, artist:trackArtist})
+    };
+
 
     //$('#playlist').append(trackName  + ', by ' + trackArtist + "</br>");
-  }
+
 
   $scope.publish = function() {
 
@@ -147,7 +163,18 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
 
       // Once the tweet is saved, reset the value of $scope.newTweet to empty string
         .then(function() {
+          //var newPlaylist = $firebaseArray(playlistRef);
+          //newPlaylist.
           $scope.playlistName = '';
+          playlistAttempt = [];
+          //while ($scope.currentPlaylist.$getRecord($scope.currentPlaylist.$keyAt(0)) != null) {
+          //  $scope.currentPlaylist.$remove(0);
+          //  $scope.currentPlaylist.$remove(1);
+          //}
+          $('#playlist').html("");
+
+          //$scope.currentPlaylist.$remove(0);
+          alert("publish function");
         })
   }
 
