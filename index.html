@@ -19,6 +19,13 @@
 
 	<!-- AngularFire -->
 	<script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+
+	<!-- UI Router -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.js"></script>
+
+	<!-- leaflet libraries -->
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
 	
 	<!-- Read scripts -->
 	<script src="app.js"></script>
@@ -81,7 +88,25 @@
 		</form>
 
 
+
 		<div>
+			<a class="btn btn-default">Click for map!</a>
+
+
+			<div class="container" id="mapContainer">
+				<!-- This is the div that your map will go in.  You'll need to reference its id -->
+				<div id="container">
+				</div>
+			</div>
+
+
+			<script>
+				// This is where you should execute your drawMap function
+				drawMap()
+			</script>
+
+
+
 			<!-- Form -->
 			<form class="container" name="songForm" ng-show="userId">
 				<div class="form-group">
@@ -110,7 +135,7 @@
 				<form name="playlist-input" id="playlist-input">
 				<textarea placeholder="Name Your Playlist" ng-model="playlistName" name="title" class="form-control" required ng-maxlength="140"></textarea>
 					<ul  id="playlist" name="playlist" ng-model="newPlaylist">
-						<!--<li ng-repeat="track in playlistAttempt">{{track.trackTitle}}, by {{track.artist}}</li>-->
+
 					</ul>
 					<!--<p id="playlist" ng-model="newPlaylist"></p>-->
 					<button ng-click="publish()" type="submit" class="btn btn-primary" >
@@ -123,28 +148,28 @@
 
 				<!-- Element for writing tweets -->
 				<div class="tweet-box write-tweet">
-					<div>
-						<!-- Show image of current user -->
-						<img class="image" ng-src="{{users[userId].userImage}}"></img>
 
-						<!-- Form for writing tweets -->
-						<form name="tweet-input" id="tweet-input">
+					<!-- Show image of current user -->
+					<img class="image" ng-src="{{users[userId].userImage}}"></img>
 
-							<!-- Bind model newTweet to a textarea element.
-								set a maximum length of 140 characters -->
-							<textarea placeholder="What's Happening..." ng-model="newTweet" name="text" class="form-control" required ng-maxlength="140"></textarea>
+					<!-- Form for writing tweets -->
+					<form name="tweet-input" id="tweet-input">
+
+						<!-- Bind model newTweet to a textarea element.
+							set a maximum length of 140 characters -->
+						<textarea placeholder="What's Happening..." ng-model="newTweet" name="text" class="form-control" required ng-maxlength="140"></textarea>
 
 
-							<!-- Tweet button -->
-							<div class="form-group send-tweet">
+						<!-- Tweet button -->
+						<div class="form-group send-tweet">
 
-								<!-- Execute the tweet function when clicked -->
-								<button ng-click="tweet()" ng-disabled="tweet-input.$invalid" type="submit" class="btn btn-primary">
-									<i class="fa fa-pencil-square-o"></i> Tweet
-								</button>
-							</div>
-						</form>
-					</div>
+							<!-- Execute the tweet function when clicked -->
+							<button ng-click="tweet()" ng-disabled="tweet-input.$invalid" type="submit" class="btn btn-primary">
+								<i class="fa fa-pencil-square-o"></i> Tweet
+							</button>
+						</div>
+					</form>
+
 				</div>
 
 				<!-- Show everyone's tweets! -->

@@ -148,18 +148,32 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
 
 
   $scope.publish = function() {
+    var lat = 1;
+    var lon = 1;
+    var first = function firstMethod() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+
+        function showPosition(position) {
+          lat = position.coords.latitude;
+          lon = position.coords.longitude;
+        };
+      };
+    }
+
 
     // Add a new object to the tweets array using the firebaseArray .$add method.
-    $scope.tweets.$add({
-      //text:$scope.newPlaylist,
-
-
-      text:$scope.playlistName,
-      content: $('#playlist').html(),
-      userId:$scope.userId,
-      likes:0,
-      time:Firebase.ServerValue.TIMESTAMP
-    })
+    //.then(function() {
+          $scope.tweets.$add({
+            text:$scope.playlistName,
+            content: $('#playlist').html(),
+            userId:$scope.userId,
+            likes:0,
+            time:Firebase.ServerValue.TIMESTAMP,
+            late:lat,
+            lone:lon
+          })
+        //})
 
       // Once the tweet is saved, reset the value of $scope.newTweet to empty string
         .then(function() {
@@ -174,7 +188,7 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
           $('#playlist').html("");
 
           //$scope.currentPlaylist.$remove(0);
-          alert("publish function");
+          alert(lat + ", " + lon);
         })
   }
 
@@ -184,3 +198,35 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
 $('body').tooltip({
     selector: '[title]'
 });
+
+
+
+
+
+var map;
+
+// Function to draw your map
+$scope.drawMap = function(){
+  // Create map and set view
+
+  var latitude = 34;
+  var longitude = -100;
+  var zoom = 5;
+
+  var dataSet;
+
+
+  map = L.map('mapContainer').setView([latitude, longitude], zoom)
+
+  // Create a tile layer variable using the appropriate url
+  var layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png')
+  // Add the layer to your map
+  layer.addTo(map)
+  alert($scope.tweets[0].text.val())
+  var test = new L.LayerGroup();
+  var circle = new L.circleMarker([2, 4], {color: '#ff69ff'});
+  circle.addTo(test);
+  test.addTo(map);
+
+
+}
