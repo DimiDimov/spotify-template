@@ -1,3 +1,4 @@
+@import url(https://fonts.googleapis.com/css?family=Amatic+SC:400,700);
 body {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   background:rgba(245,248,250,1);
@@ -26,13 +27,22 @@ li {
 
 header {
   text-align: center;
+  font-family: 'Amatic SC';
+  font-weight: 700;
 }
 
-#tweet-input {
+h1 {
+  font-size: 60px;
+}
+
+#playlist-input {
   margin-left:70px;
   margin-top:10px;
 }
 
+#heart {
+  height: 1em;
+}
 
 .image {
   margin:10px;
@@ -92,3 +102,5 @@ header {
 header .log-out {
   float:right;
 }
+
+

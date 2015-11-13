@@ -11,11 +11,6 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
   // Create references to store tweets and users
   var tweetsRef = ref.child('tweets');
   var usersRef = ref.child("users");
-  //var playlistRef = ref.child("currentPlaylist");
-
-  //$scope.currentPlaylist = $firebaseArray(playlistRef);
-
-
 
   // Create a firebaseArray of your tweets, and store this as part of $scope
   $scope.tweets = $firebaseArray(tweetsRef);
@@ -39,6 +34,8 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
     $scope.authObj.$createUser({
       email: $scope.email,
       password: $scope.password,
+      lat: $scope.lat,
+      lon: $scope.lon
     })
 
       // Once the user is created, call the logIn function
@@ -50,6 +47,8 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
           $scope.users[authData.uid] ={
             handle:$scope.handle,
             userImage:$scope.userImage,
+            lat: $scope.lat,
+            lon: $scope.lon
           }
           $scope.users.$save()
         })
@@ -72,9 +71,13 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
     console.log('log in')
     return $scope.authObj.$authWithPassword({
       email: $scope.email,
-      password: $scope.password
+      password: $scope.password,
+      lat: $scope.lat,
+      lon: $scope.lon
     })
+
   }
+
 
   // LogOut function
   $scope.logOut = function() {
@@ -82,23 +85,7 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
     $scope.userId = false
   }
 
-  // Write an accesible tweet function to save a tweet
-  $scope.tweet = function() {
 
-    // Add a new object to the tweets array using the firebaseArray .$add method.
-    $scope.tweets.$add({
-      text:$scope.newTweet,
-      userId:$scope.userId,
-      likes:0,
-      time:Firebase.ServerValue.TIMESTAMP
-    })
-
-      // Once the tweet is saved, reset the value of $scope.newTweet to empty string
-        .then(function() {
-          alert("test");
-          $scope.newTweet = ''
-        })
-  }
 
   // Function to like a tweet
   $scope.like = function(tweet) {
@@ -132,101 +119,68 @@ var myCtrl = myApp.controller('myCtrl', function($scope, $firebaseAuth, $firebas
     }
   }
 
-  //$scope.currentPlaylist = $firebaseArray();
+    var fuck = "";
 
   $scope.add = function(trackName, trackArtist) {
     var li = $('<li>').html(trackName  + ', by ' + trackArtist);
     $('#playlist').append(li);
-    //$scope.currentPlaylist.$add({
-    //  trackTitle: trackName,
-    //  artist: trackArtist
-    playlistAttempt.push({trackTitle:trackName, artist:trackArtist})
+    fuck += trackName + " by " + trackArtist + " | ";
     };
 
-
-    //$('#playlist').append(trackName  + ', by ' + trackArtist + "</br>");
-
-
   $scope.publish = function() {
-    var lat = 1;
-    var lon = 1;
-    var first = function firstMethod() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-
-        function showPosition(position) {
-          lat = position.coords.latitude;
-          lon = position.coords.longitude;
-        };
-      };
-    }
-
-
     // Add a new object to the tweets array using the firebaseArray .$add method.
-    //.then(function() {
-          $scope.tweets.$add({
-            text:$scope.playlistName,
-            content: $('#playlist').html(),
-            userId:$scope.userId,
-            likes:0,
-            time:Firebase.ServerValue.TIMESTAMP,
-            late:lat,
-            lone:lon
-          })
-        //})
+    $scope.tweets.$add({
+      text:$scope.playlistName,
+      content: fuck,
+      userId:$scope.userId,
+      likes:0,
+      time:Firebase.ServerValue.TIMESTAMP,
+      //lat:$scope.lat,
+      //lon:$scope.lon
+    })
 
       // Once the tweet is saved, reset the value of $scope.newTweet to empty string
-        .then(function() {
-          //var newPlaylist = $firebaseArray(playlistRef);
-          //newPlaylist.
-          $scope.playlistName = '';
-          playlistAttempt = [];
-          //while ($scope.currentPlaylist.$getRecord($scope.currentPlaylist.$keyAt(0)) != null) {
-          //  $scope.currentPlaylist.$remove(0);
-          //  $scope.currentPlaylist.$remove(1);
-          //}
-          $('#playlist').html("");
-
-          //$scope.currentPlaylist.$remove(0);
-          alert(lat + ", " + lon);
-        })
+      .then(function() {
+        $scope.playlistName = '';
+        $('#playlist').html("");
+        fuck = "";
+      })
   }
 
+
+
+
+
+
+
+
+
+
+  var map;
+
+  // Function to draw your map
+  $scope.drawMap = function(){
+    // Create map and set view
+
+    var latitude = 34;
+    var longitude = -100;
+    var zoom = 4;
+
+    var dataSet;
+
+
+    map = L.map('mapContainer').setView([latitude, longitude], zoom)
+
+    // Create a tile layer variable using the appropriate url
+    var layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png')
+
+    // Add the layer to your map
+    layer.addTo(map)
+    var test = new L.LayerGroup();
+    var circle = new L.circleMarker([47, -122], {color: '#ff69ff'});
+    var circle2 = new L.circleMarker([42, -118], {color: '#ff69ff'});
+    circle.addTo(test);
+    circle2.addTo(test);
+    test.addTo(map);
+  }
 })
-
-// Add tool tips to anything with a title property
-$('body').tooltip({
-    selector: '[title]'
-});
-
-
-
-
-
-var map;
-
-// Function to draw your map
-$scope.drawMap = function(){
-  // Create map and set view
-
-  var latitude = 34;
-  var longitude = -100;
-  var zoom = 5;
-
-  var dataSet;
-
-
-  map = L.map('mapContainer').setView([latitude, longitude], zoom)
-
-  // Create a tile layer variable using the appropriate url
-  var layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png')
-  // Add the layer to your map
-  layer.addTo(map)
-  alert($scope.tweets[0].text.val())
-  var test = new L.LayerGroup();
-  var circle = new L.circleMarker([2, 4], {color: '#ff69ff'});
-  circle.addTo(test);
-  test.addTo(map);
-
-
-}

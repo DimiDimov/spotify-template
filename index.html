@@ -34,8 +34,12 @@
 </head>
 <body ng-app="myApp" ng-controller="myCtrl">
 
+
 	<!-- Header with logout button -->
 	<header>
+
+		<h1><img src="https://pbmo.files.wordpress.com/2012/09/mixtape.gif"/> Mix-r</h1>
+		<h3>Create, post, and share your favorite mixes today!</h3>
 		<span class="fa fa-twitter fa-2x"></span>
 		<div class="log-out" ng-show="userId">
 			<span>{{users[userId].handle}}</span>
@@ -79,6 +83,16 @@
 				<input  name="password" type="password" class="form-control" ng-model="password" required></input>
 			</div>
 
+			<!-- Location -->
+			<div class="form-group">
+				<label>Latitude:</label>
+				<input  name="lat"  class="form-control" ng-model="lat" required></input>
+			</div>
+			<div class="form-group">
+				<label>Longitude:</label>
+				<input  name="lon"  class="form-control" ng-model="lon" required></input>
+			</div>
+
 			<!-- Submit buttons: should only be active if certain inputs are valid -->
 			<div class="form-group">
 				<button ng-click="signUp()" ng-disabled="myForm.$invalid" type="submit" class="btn btn-primary">Sign-up</button>
@@ -90,22 +104,15 @@
 
 
 		<div>
-			<a class="btn btn-default">Click for map!</a>
+			<a class="btn btn-default" ng-click="drawMap()">Click for map!</a>
+		</br>
 
-
-			<div class="container" id="mapContainer">
+			<!-- Map -->
+			<div class="container" id="mapContainer" ng-show="userId">
 				<!-- This is the div that your map will go in.  You'll need to reference its id -->
 				<div id="container">
 				</div>
 			</div>
-
-
-			<script>
-				// This is where you should execute your drawMap function
-				drawMap()
-			</script>
-
-
 
 			<!-- Form -->
 			<form class="container" name="songForm" ng-show="userId">
@@ -131,46 +138,25 @@
 
 			</div>
 			<!-- Execute the publish function when clicked -->
-			<div class="tweet-box write-tweet">
+			<div class="tweet-box write-tweet" ng-show="userId">
+				<!-- Show image of current user -->
+				<img class="image" ng-src="{{users[userId].userImage}}"></img>
 				<form name="playlist-input" id="playlist-input">
-				<textarea placeholder="Name Your Playlist" ng-model="playlistName" name="title" class="form-control" required ng-maxlength="140"></textarea>
+				<textarea placeholder="Name Your Playlist..." ng-model="playlistName" name="title" class="form-control" required ng-maxlength="140"></textarea>
 					<ul  id="playlist" name="playlist" ng-model="newPlaylist">
 
 					</ul>
-					<!--<p id="playlist" ng-model="newPlaylist"></p>-->
-					<button ng-click="publish()" type="submit" class="btn btn-primary" >
-						Publish
-					</button>
+					<div class="form-group send-tweet">
+						<button ng-click="publish()" type="submit" class="btn btn-primary" >
+							<i class="fa fa-pencil-square-o"></i> Publish
+						</button>
+					</div>
 				</form>
 			</div>
 			<!-- Show tweets (if userId is defined) -->
 			<div ng-show="userId">
 
-				<!-- Element for writing tweets -->
-				<div class="tweet-box write-tweet">
 
-					<!-- Show image of current user -->
-					<img class="image" ng-src="{{users[userId].userImage}}"></img>
-
-					<!-- Form for writing tweets -->
-					<form name="tweet-input" id="tweet-input">
-
-						<!-- Bind model newTweet to a textarea element.
-							set a maximum length of 140 characters -->
-						<textarea placeholder="What's Happening..." ng-model="newTweet" name="text" class="form-control" required ng-maxlength="140"></textarea>
-
-
-						<!-- Tweet button -->
-						<div class="form-group send-tweet">
-
-							<!-- Execute the tweet function when clicked -->
-							<button ng-click="tweet()" ng-disabled="tweet-input.$invalid" type="submit" class="btn btn-primary">
-								<i class="fa fa-pencil-square-o"></i> Tweet
-							</button>
-						</div>
-					</form>
-
-				</div>
 
 				<!-- Show everyone's tweets! -->
 				<div>
@@ -182,18 +168,17 @@
 							<img class="image" ng-src="{{users[tweet.userId].userImage}}"></img>
 
 							<!-- Put in the twitter handle and time of tweet -->
-							<span class="handle">{{users[tweet.userId].handle}}</span>
+							<span class="handle">{{tweet.text}}</span>
 							<span class="time">{{tweet.time | date}}</span>
 						</div>
 
 						<!-- Put in the text of the tweet -->
 						<div class="tweet">
-							{{tweet.text}}
+							mixed by: {{users[tweet.userId].handle}}
 						</div>
 
-						<div class="playlistSongs">
-							<ul>{{tweet.content}}</ul>
-
+						<div class="playlistSongs" >
+							<p></br>{{tweet.content}}</p>
 						</div>
 
 						<!-- Create a section for showing tweet likes -->
@@ -201,7 +186,7 @@
 
 							<!-- Show a heart icon that, when clicked,
 								passes your tweet to your "like" function -->
-							<i ng-click="like(tweet)" class="fa fa-heart"></i>
+							<i ng-click="like(tweet)" class="fa fa-heart"><img id="heart" src="http://cdn.1001freedownloads.com/icon/thumb/342/heart-512.png" /></i>
 
 							<!-- Show your total number of likes -->
 							<span>{{tweet.likes}}</span>
